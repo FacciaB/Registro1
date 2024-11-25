@@ -75,7 +75,7 @@
     <div id="result" style="display: none;"></div>
 
     <script>
-        // Simula gli utenti e i set di domande
+        // Lista degli utenti e delle credenziali
         const users = {
             "admin": "password",
             "attiglio.dematteis": "cfp.2024",
@@ -83,18 +83,39 @@
             "curt.dematteis": "cfp.2024",
             "flaffy.dematteis": "cfp.2024",
             "grigetta.benua": "cfp.2024",
-            // Aggiungi altri utenti qui
+            "kendy.dematteis": "cfp.2024",
+            "lampo.benua": "cfp.2024",
+            "leonard.lollo.luna.benua": "cfp.2024",
+            "luna.dematteis": "cfp.2024",
+            "pandino.dematteis": "cfp.2024",
+            "papero.benua": "cfp.2024",
+            "sparcky.benua": "cfp.2024",
+            "stellina.dematteis": "cfp.2024",
+            "sunny.benua": "cfp.2024",
+            "tartaruga.benua": "cfp.2024",
+            "tina.dematteis": "cfp.2024",
+            "yucky.benua": "cfp.2024"
         };
 
+        // Domande personalizzate per ogni utente
         const questionSets = {
-            set1: [
+            "attiglio.dematteis": [
                 { question: "Qual è l'unità di misura della corrente elettrica?", options: ["Ampere", "Volt", "Ohm", "Watt"], correct: "a" },
                 { question: "Che cos'è un conduttore?", options: ["Materiale che trasmette corrente", "Materiale che blocca corrente", "Materiale magnetico", "Nessuna delle precedenti"], correct: "a" },
-            ],
-            set2: [
                 { question: "Quale materiale è un isolante?", options: ["Rame", "Alluminio", "Plastica", "Ferro"], correct: "c" },
                 { question: "Che cos'è la legge di Ohm?", options: ["V = IR", "P = IV", "Q = CV", "R = V/I"], correct: "a" },
+                { question: "Cos'è un campo magnetico?", options: ["Forza che agisce sui corpi elettrici", "Forza che agisce sui corpi magnetici", "Una forma di energia", "Un materiale speciale"], correct: "b" },
+                { question: "In un circuito in parallelo, la tensione è:", options: ["Uguale in tutti i punti", "Somma delle tensioni", "Sempre uguale alla corrente", "Non può essere misurata"], correct: "a" },
+                { question: "Come si calcola la resistenza totale in un circuito in serie?", options: ["Somma delle resistenze", "Prodotto delle resistenze", "Sottrazione delle resistenze", "Resistenza dell'elemento maggiore"], correct: "a" },
+                { question: "Cosa è un diodo?", options: ["Un tipo di resistenza", "Un conduttore che permette il passaggio solo in una direzione", "Un generatore di corrente", "Un tipo di batteria"], correct: "b" },
+                { question: "Quale di questi materiali è un buon conduttore?", options: ["Legno", "Rame", "Plastica", "Vetro"], correct: "b" },
+                { question: "Che cosa misura un voltmetro?", options: ["Corrente", "Resistenza", "Potenza", "Tensione"], correct: "d" }
             ],
+            // Altri utenti hanno lo stesso set di domande ma con risposte diverse
+            "briciola.dematteis": [
+                // Aggiungi domande personalizzate per questo utente, analoghe a quelle sopra
+            ],
+            // Aggiungi domande per gli altri utenti...
         };
 
         let currentUser = null;
@@ -107,17 +128,15 @@
             if (users[username] === password) {
                 currentUser = username;
 
-                // Assegna un set di domande casuale se non è admin
-                if (username !== "admin") {
-                    currentQuestions = Math.random() > 0.5 ? questionSets.set1 : questionSets.set2;
-                }
-
-                document.querySelector(".login").style.display = "none";
-                document.querySelector(".quiz-section").style.display = "block";
-
+                // Assegna un set di domande personalizzate per ogni utente
                 if (username === "admin") {
+                    document.querySelector(".login").style.display = "none";
+                    document.querySelector(".quiz-section").style.display = "block";
                     document.querySelector(".quiz-section").innerHTML = "<h1>Benvenuto, Admin!</h1><p>Puoi gestire i risultati degli utenti qui (da implementare).</p>";
                 } else {
+                    currentQuestions = questionSets[username] || [];
+                    document.querySelector(".login").style.display = "none";
+                    document.querySelector(".quiz-section").style.display = "block";
                     loadQuiz();
                 }
             } else {
