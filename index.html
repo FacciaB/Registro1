@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Elettricità e Magnetismo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .login, .quiz-section {
+            margin-bottom: 20px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        .options {
+            margin-left: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #007BFF;
+            border-radius: 8px;
+            background-color: #e8f4ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="login">
+        <h1>Accesso</h1>
+        <form id="login-form">
+            <label>Nome utente:</label>
+            <input type="text" id="username" required>
+            <br>
+            <label>Password:</label>
+            <input type="password" id="password" required>
+            <br><br>
+            <button type="button" onclick="login()">Accedi</button>
+        </form>
+    </div>
+
+    <div class="quiz-section" style="display: none;">
+        <h1>Quiz su Elettricità e Magnetismo</h1>
+        <p>Rispondi alle seguenti domande scegliendo l'opzione corretta. Ogni risposta corretta vale 10 punti, mentre ogni errore sottrae 10 punti. Il punteggio massimo è 100 punti.</p>
+        <form id="quiz-form"></form>
+        <button type="button" onclick="submitQuiz()">Invia</button>
+    </div>
+
+    <div id="result" style="display: none;"></div>
+
+    <script>
+        // Simula gli utenti e i set di domande
+        const users = {
+            "admin": "password",
+            "attiglio.dematteis": "cfp.2024",
+            "briciola.dematteis": "cfp.2024",
+            "curt.dematteis": "cfp.2024",
+            "flaffy.dematteis": "cfp.2024",
+            "grigetta.benua": "cfp.2024",
+            // Aggiungi altri utenti qui
+        };
+
+        const questionSets = {
+            set1: [
+                { question: "Qual è l'unità di misura della corrente elettrica?", options: ["Ampere", "Volt", "Ohm", "Watt"], correct: "a" },
+                { question: "Che cos'è un conduttore?", options: ["Materiale che trasmette corrente", "Materiale che blocca corrente", "Materiale magnetico", "Nessuna delle precedenti"], correct: "a" },
+            ],
+            set2: [
+                { question: "Quale materiale è un isolante?", options: ["Rame", "Alluminio", "Plastica", "Ferro"], correct: "c" },
+                { question: "Che cos'è la legge di Ohm?", options: ["V = IR", "P = IV", "Q = CV", "R = V/I"], correct: "a" },
+            ],
+        };
+
+        let currentUser = null;
+        let currentQuestions = [];
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (users[username] === password) {
+                currentUser = username;
+
+                // Assegna un set di domande casuale se non è admin
+                if (username !== "admin") {
+                    currentQuestions = Math.random() > 0.5 ? questionSets.set1 : questionSets.set2;
+                }
+
+                document.querySelector(".login").style.display = "none";
+                document.querySelector(".quiz-section").style.display = "block";
+
+                if (username === "admin") {
+                    document.querySelector(".quiz-section").innerHTML = "<h1>Benvenuto, Admin!</h1><p>Puoi gestire i risultati degli utenti qui (da implementare).</p>";
+                } else {
+                    loadQuiz();
+                }
+            } else {
+                alert("Credenziali non valide!");
+            }
+        }
+
+        function loadQuiz() {
+            const quizForm = document.getElementById("quiz-form");
+            quizForm.innerHTML = "";
+
+            currentQuestions.forEach((q, index) => {
+                const questionHTML = `
+                    <div class="question">
+                        <p>${index + 1}. ${q.question}</p>
+                        <div class="options">
+                            ${q.options.map((opt, i) => `
+                                <label><input type="radio" name="q${index}" value="${String.fromCharCode(97 + i)}"> ${String.fromCharCode(97 + i)}) ${opt}</label><br>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                quizForm.innerHTML += questionHTML;
+            });
+        }
+
+        function submitQuiz() {
+            if (!currentUser || currentUser === "admin") return;
+
+            let score = 100;
+            let errors = 0;
+
+            currentQuestions.forEach((q, index) => {
+                const answer = document.querySelector(`input[name="q${index}"]:checked`);
+                if (!answer || answer.value !== q.correct) {
+                    score -= 10;
+                    errors++;
+                }
+            });
+
+            const resultDiv = document.getElementById("result");
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = `
+                <h2>Complimenti!</h2>
+                <p>Hai ricevuto: <strong>${score}/100</strong>.</p>
+                <p>Hai commesso <strong>${errors}</strong> errore/i.</p>
+            `;
+        }
+    </script>
+</body>
+</html>
